@@ -5,7 +5,7 @@ A Java Swing-based desktop application for managing personal finances. This appl
 ## Features
 
 - **Transaction Management**
-  - Add income and expense transaction
+  - Add income and expense transactions
   - Categorize transactions with predefined or custom categories
   - Add descriptions to transactions
   - Delete selected transactions
