@@ -98,3 +98,9 @@ Feel free to fork this repository and submit pull requests. You can also open is
 ## License
 
 This project is open-source and available under the MIT License.
+
+
+Wykonali:
+Mateusz Szumowski
+Patryk Cieślik
+Maciej Żak
