@@ -4,6 +4,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 class Transaction {
@@ -108,14 +109,14 @@ class TransactionManagerGUI extends JFrame {
     }
 
     private void initializeGUI() {
-        setTitle("Menedżer Budżetu");
+        setTitle("Personalny Menadżer Finansów");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout(10, 10));
 
         // Panel górny z balansem
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         balanceLabel = new JLabel("Saldo: 0.00 zł");
-        balanceLabel.setFont(new Font("Dialog", Font.BOLD, 16));
+        balanceLabel.setFont(new Font("Arial", Font.BOLD, 18));
         topPanel.add(balanceLabel);
 
         // Panel formularza
@@ -133,33 +134,44 @@ class TransactionManagerGUI extends JFrame {
 
         // Komponenty formularza
         amountField = new JTextField(10);
+        amountField.setToolTipText("Wpisz kwotę (np. 99.99)");
+        
         categoryCombo = new JComboBox<>(manager.getExpenseCategories().toArray(new String[0]));
         categoryCombo.setEditable(true);
+        categoryCombo.setToolTipText("Wybierz istniejącą lub wpisz nową kategorię");
+        
         descriptionField = new JTextField(20);
+        descriptionField.setToolTipText("Dodaj opis transakcji (opcjonalnie)");
+        
         JButton addButton = new JButton("Dodaj");
+        addButton.setBackground(new Color(34, 139, 34));
+        addButton.setForeground(Color.WHITE);
+        
         JButton deleteButton = new JButton("Usuń zaznaczone");
+        deleteButton.setBackground(new Color(178, 34, 34));
+        deleteButton.setForeground(Color.WHITE);
 
         // Dodawanie komponentów do formularza
         gbc.gridx = 0; gbc.gridy = 0;
         inputPanel.add(expenseRadio, gbc);
         gbc.gridx = 1;
         inputPanel.add(incomeRadio, gbc);
-
+        
         gbc.gridx = 0; gbc.gridy = 1;
         inputPanel.add(new JLabel("Kwota:"), gbc);
         gbc.gridx = 1;
         inputPanel.add(amountField, gbc);
-
+        
         gbc.gridx = 0; gbc.gridy = 2;
         inputPanel.add(new JLabel("Kategoria:"), gbc);
         gbc.gridx = 1;
         inputPanel.add(categoryCombo, gbc);
-
+        
         gbc.gridx = 0; gbc.gridy = 3;
         inputPanel.add(new JLabel("Opis:"), gbc);
         gbc.gridx = 1;
         inputPanel.add(descriptionField, gbc);
-
+        
         gbc.gridx = 0; gbc.gridy = 4;
         gbc.gridwidth = 2;
         inputPanel.add(addButton, gbc);
@@ -168,6 +180,12 @@ class TransactionManagerGUI extends JFrame {
         String[] columnNames = {"Data", "Kwota", "Kategoria", "Opis", "Typ"};
         tableModel = new DefaultTableModel(columnNames, 0);
         transactionTable = new JTable(tableModel);
+        
+        // Wyrównanie kwoty do prawej
+        DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
+        rightRenderer.setHorizontalAlignment(JLabel.RIGHT);
+        transactionTable.getColumnModel().getColumn(1).setCellRenderer(rightRenderer);
+        
         JScrollPane scrollPane = new JScrollPane(transactionTable);
 
         // Panel przycisków
@@ -183,7 +201,6 @@ class TransactionManagerGUI extends JFrame {
         // Obsługa zdarzeń
         addButton.addActionListener(e -> addTransaction());
         deleteButton.addActionListener(e -> deleteSelectedTransactions());
-
         expenseRadio.addActionListener(e -> updateCategoryCombo());
         incomeRadio.addActionListener(e -> updateCategoryCombo());
 
@@ -218,7 +235,6 @@ class TransactionManagerGUI extends JFrame {
             updateTable();
             updateBalance();
             clearInputFields();
-
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, 
                 "Proszę wprowadzić poprawną kwotę (użyj kropki lub przecinka dla groszy)!");
@@ -232,7 +248,6 @@ class TransactionManagerGUI extends JFrame {
             return;
         }
 
-        // Usuwamy od końca, żeby nie zmieniać indeksów pozostałych elementów
         for (int i = selectedRows.length - 1; i >= 0; i--) {
             manager.removeTransaction(selectedRows[i]);
         }
@@ -251,13 +266,13 @@ class TransactionManagerGUI extends JFrame {
     private void updateBalance() {
         double balance = manager.getBalance();
         balanceLabel.setText(String.format("Saldo: %.2f zł", balance));
-        // Zmiana koloru w zależności od salda
+        
         if (balance < 0) {
             balanceLabel.setForeground(Color.RED);
         } else if (balance > 0) {
-            balanceLabel.setForeground(new Color(0, 150, 0)); // Ciemny zielony
+            balanceLabel.setForeground(new Color(0, 100, 0));
         } else {
-            balanceLabel.setForeground(Color.BLACK);
+            balanceLabel.setForeground(Color.GRAY);
         }
     }
 
