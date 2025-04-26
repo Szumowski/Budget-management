@@ -40,7 +40,7 @@ class Transaction {
 }
 
 class TransactionManager {
-    private List<Transaction> transactions;
+    private List<Transaction> transaction;
     private Set<String> expenseCategories;
     private Set<String> incomeCategories;
 
